@@ -33,7 +33,6 @@ function App() {
                 <Route path="/cart" element={<Cart />} />
                 <Route path="*" element={<h1>Comming Soon...</h1>} />
               </Route>
-
             </Routes>
           </div >
         </Visibility.Provider>

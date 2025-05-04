@@ -54,7 +54,7 @@ const Body = () => {
   return (
     <div className='w-full'>
       <div className='w-[80%] mx-auto overflow-hidden mt-3'>
-        <OnYourMind data={onYourMindData} />
+        {/* <OnYourMind data={onYourMindData} /> */}
         <TopRestaurant data={topRestaurantsData} title={topResTitle} />
         <OnlineFoodDelivery data={topRestaurantsData} title={onlineTitle} />
       </div>

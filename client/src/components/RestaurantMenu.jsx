@@ -254,7 +254,7 @@ const RestaurantMenu = () => {
         ) : null}
         <div>
           {menuData.map(({ card: { card } }) => (
-            <MenuCard card={card} />
+            <MenuCard card={card} resInfo={resInfo} />
           ))}
         </div>
       </div>
@@ -262,7 +262,7 @@ const RestaurantMenu = () => {
   );
 };
 
-function MenuCard({ card }) {
+function MenuCard({ card, resInfo }) {
   let closeVar = false;
   if (card["@type"]) {
     closeVar = true;
@@ -289,7 +289,7 @@ function MenuCard({ card }) {
                 }`}
             />
           </div>
-          {isOpen && <DetailMenu itemCards={itemCards} />}
+          {isOpen && <DetailMenu itemCards={itemCards} resInfo={resInfo} />}
         </div>
 
         <hr
@@ -306,14 +306,14 @@ function MenuCard({ card }) {
       <div>
         <h1 className='font-bold text-xl'>{categories.title}</h1>
         {categories.map((data) => {
-          <MenuCard card={data} />;
+          <MenuCard card={data} resInfo={resInfo} />;
         })}
       </div>
     );
   }
 }
 
-function DetailMenuCard({ info }) {
+function DetailMenuCard({ info, resInfo }) {
   const {
     name,
     price,
@@ -337,10 +337,19 @@ function DetailMenuCard({ info }) {
 
 
   function handleAddToCart() {
+    console.log(resInfo);
+    let getResInfoFromLocalStore = JSON.parse(localStorage.getItem("resInfo")) || []
+    console.log(resInfo);
     const isAdded = cartData.find((data) => data.id === info.id)
     if (!isAdded) {
-      setCartData((prev) => [...prev, info])
-      localStorage.setItem("cartData", JSON.stringify([...cartData, info]))
+      if (getResInfoFromLocalStore.name === resInfo.name || getResInfoFromLocalStore.length === 0) {
+        setCartData((prev) => [...prev, info])
+        localStorage.setItem("cartData", JSON.stringify([...cartData, info]))
+        localStorage.setItem("resInfo", JSON.stringify(resInfo))
+      } else {
+        alert("different restaurant item")
+      }
+
     } else {
       alert("Already there")
     }
@@ -426,7 +435,7 @@ function DetailMenuCard({ info }) {
   )
 }
 
-function DetailMenu({ itemCards }) {
+function DetailMenu({ itemCards, resInfo }) {
   // console.log(itemCards);
   return (
     <div className='my-3'>
@@ -437,7 +446,7 @@ function DetailMenu({ itemCards }) {
           },
         }) => {
           return (
-            <DetailMenuCard info={info} />
+            <DetailMenuCard info={info} resInfo={resInfo} />
           )
         }
       )}

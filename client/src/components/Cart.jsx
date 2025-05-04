@@ -3,12 +3,31 @@ import { CartContext } from '../context/contextApi'
 
 const Cart = () => {
   const { cartData, setCartData } = useContext(CartContext)
+  console.log(cartData);
+
+  // let totalPrice = 0;
+  // for (let i = 0; i < cartData.length; i++) {
+  //   totalPrice += cartData[i].price / 100 || cartData[i].defaultPrice / 100
+  // }
+
+  let totalPrice = cartData.reduce((acc, currVal) => (acc + (currVal.price / 100 || currVal.defaultPrice / 100)), 0)
 
   function handleRemoveFromCart(idx) {
-    let newArr = [...cartData]
-    newArr.splice(idx, 1);
-    setCartData(newArr);
-    localStorage.setItem("cartData", JSON.stringify(newArr))
+    if (cartData.length > 1) {
+      let newArr = [...cartData]
+      newArr.splice(idx, 1);
+      setCartData(newArr);
+      localStorage.setItem("cartData", JSON.stringify(newArr))
+    } else {
+      handleClearCart()
+    }
+
+  }
+
+  function handleClearCart() {
+    setCartData([])
+    // localStorage.setItem("cartData", JSON.stringify([]))
+    localStorage.clear()
   }
 
   if (cartData.length <= 0) {
@@ -32,6 +51,7 @@ const Cart = () => {
               <div className='flex w-full h-200px justify-between my-5 p-2'>
                 <div className='w-[70%]'>
                   <h2 className='text-xl font-bold'>{data.name}</h2>
+                  <p>₹{data.price / 100 || data.defaultPrice / 100}</p>
                 </div>
                 <div className='w-[30%] h-[80%]'>
                   <img
@@ -54,6 +74,8 @@ const Cart = () => {
             )
           })
         }
+        <h1>₹{totalPrice}</h1>
+        <button className='p-3 bg-green-300' onClick={handleClearCart}>Clear Cart</button>
       </div>
     </div>
   )

@@ -12,8 +12,12 @@ import {
 import React, { useContext, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { CartContext, Coordinates, Visibility } from "../context/contextApi";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
+  const data = useSelector((state) => state.toggleSlice)
+  console.log(data);
+
   const { visible, setVisible } = useContext(Visibility);
   // console.log(visible);
   const [searchResult, setSearchResult] = useState([]);
