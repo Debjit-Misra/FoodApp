@@ -3,7 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const RestaurantCard = (info) => {
-  // console.log(info.link.split("/")[5]);
+  console.log(info);
   return (
     <Link to={`/restaurantMenu/${info.link.split("/").at(-1)}`}>
       <div className='relative min-w-[273px] h-[183px]  rounded-2xl overflow-hidden'>
@@ -16,7 +16,7 @@ const RestaurantCard = (info) => {
           alt='restaurant-image'
         />
         <div className='absolute top-0 bg-gradient-to-t from-black/90 from-2% to-transparent to-50%  w-full h-full'></div>
-        <p className='absolute bottom-0 text-white text-2xl font-bold ml-3 mb-2'>
+        <p className='absolute bottom-0 text-white text-xl font-bold ml-3 mb-2'>
           {info?.aggregatedDiscountInfoV3
             ? info?.aggregatedDiscountInfoV3?.header +
             " " +

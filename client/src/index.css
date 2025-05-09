@@ -1,1 +1,21 @@
 @import "tailwindcss";
+
+.filterBtn {
+  border: 1px solid rgb(182, 182, 182);
+  padding: 7px 12px;
+  border-radius: 30px;
+  font-weight: 500;
+  color: rgb(43, 41, 41);
+  font-size: 16px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.active {
+  background-color: hsla(0, 7%, 89%, 0.944);
+  border: 1px solid black;
+}
+
+.active span {
+  display: block;
+}

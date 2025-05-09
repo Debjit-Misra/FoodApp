@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import { MoveRight, MoveLeft } from "lucide-react";
+import { MoveRight, MoveLeft, LampCeiling } from "lucide-react";
 import OnYourMind from "./OnYourMind";
 import TopRestaurant from "./TopRestaurant";
 import OnlineFoodDelivery from "./OnlineFoodDelivery";
 import { Coordinates } from "../context/contextApi";
+import { useSelector } from "react-redux";
 
 const Body = () => {
   const [topRestaurantsData, setTopRestaurantsData] = useState([]);
@@ -12,6 +13,8 @@ const Body = () => {
   const [onlineTitle, setOnlineTitle] = useState([]);
   const [data, setData] = useState({});
   const { coord: { lat, lng } } = useContext(Coordinates)
+  // console.log(topRestaurantsData);
+
 
   async function fetchData() {
     const targetUrl =
@@ -19,7 +22,7 @@ const Body = () => {
 
     const response = await fetch(targetUrl);
     const result = await response.json();
-    console.log(result.data?.cards[0]?.card?.card?.imageLink);
+    // console.log(result.data?.cards[0]?.card?.card?.imageLink);
 
     setTopResTitle(result?.data?.cards[1]?.card?.card?.header?.title)
     setOnlineTitle(result?.data?.cards[2]?.card?.card?.title)
@@ -37,6 +40,23 @@ const Body = () => {
     fetchData();
   }, [lat, lng]);
 
+  const filterVal = useSelector((state) => state.filterSlice.filterVal)
+
+
+  const filteredData = topRestaurantsData.filter((item) => {
+    // console.log(item);
+    // console.log(filterVal);
+    // console.log(item?.info?.aggregatedDiscountInfoV3);
+    if (!filterVal) return true;
+    switch (filterVal) {
+      case "Ratings 4.0+": return item?.info?.avgRating > 4.0
+      case "Offers": return item?.info?.aggregatedDiscountInfoV3 !== undefined
+      case "Rs. 300-Rs. 600": return (item?.info?.costForTwo?.split(" ")[0].slice(1) >= 300 && item?.info?.costForTwo?.split(" ")[0].slice(1) <= 600);
+      case "Less than Rs. 300": return item?.info?.costForTwo?.split(" ")[0].slice(1) <= 300
+      default: return;
+    }
+  })
+
   if (data.communication) {
     return (
       <div className="w-full h-[500px] flex justify-center items-center">
@@ -53,10 +73,10 @@ const Body = () => {
 
   return (
     <div className='w-full'>
-      <div className='w-[80%] mx-auto overflow-hidden mt-3'>
-        {/* <OnYourMind data={onYourMindData} /> */}
+      <div className='w-[95%] sm:w-[90%] lg:w-[80%] mx-auto overflow-hidden mt-3'>
+        <OnYourMind data={onYourMindData} />
         <TopRestaurant data={topRestaurantsData} title={topResTitle} />
-        <OnlineFoodDelivery data={topRestaurantsData} title={onlineTitle} />
+        <OnlineFoodDelivery data={filterVal ? filteredData : topRestaurantsData} title={onlineTitle} />
       </div>
     </div>
   );
