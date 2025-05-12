@@ -13,7 +13,7 @@ import React, { useContext, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { CartContext, Coordinates, Visibility } from "../context/contextApi";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleSearchBar, toggleLogin } from "../utils/toggleSllice.js";
+import { toggleSearchBar, toggleLogin } from "../utils/toggleSlice.js";
 import SignInBtn from "./SignInBtn.jsx";
 
 const Navbar = () => {
@@ -164,56 +164,56 @@ const Navbar = () => {
       </div>
 
       {/* Login Toggle */}
-      {
-        loginVisible && <div className='w-full'>
-          <div
-            onClick={handleLogin}
-            className={
-              "absolute w-full h-full z-[30] bg-gray-900/60 " +
-              (loginVisible ? "visible" : "invisible")
-            }
-          ></div>
-          <div
-            className={
-              "absolute flex flex-col pl-12 bg-white p-5 w-full md:w-[37%] h-full z-40 duration-500 " +
-              (loginVisible ? "right-0" : "-right-[100%]")
-            }
-          >
-            <div className='w-[75%] h-full mt-4 '>
-              <X
-                onClick={handleLogin}
-                className='w-6 h-6 cursor-pointer text-gray-600'
-              />
-              <div className='w-full h-[90px] mt-6 flex justify-between ml-1'>
-                <div className='flex flex-col justify-between'>
-                  <h2 className='text-3xl font-semibold'>Login</h2>
-                  <span className='font-semibold -mt-3'>
-                    or&nbsp;
-                    <span className='text-orange-600'>create an account</span>
-                  </span>
-                  <div className='w-8 h-[1px] bg-black'></div>
-                </div>
-                <div className='w-[27%]'>
-                  <img
-                    className='object-center'
-                    src='https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto/Image-login_btpq7r'
-                    alt=''
-                  />
-                </div>
-              </div>
 
-              <SignInBtn />
-
-              <div className='w-full mt-1 text-[12px] font-semibold text-gray-600'>
-                <span className="">By clicking on Login, I accept the </span>
-                <span className="text-black font-bold">Terms & Conditions</span>&nbsp;
-                <span>&</span>&nbsp;
-                <span className="text-black font-bold">Privacy Policy</span>
+      <div className='w-full'>
+        <div
+          onClick={handleLogin}
+          className={
+            "absolute w-full h-full z-[30] bg-gray-900/60 " +
+            (loginVisible ? "visible" : "invisible")
+          }
+        ></div>
+        <div
+          className={
+            "fixed flex flex-col pl-12 bg-white p-5 w-full md:w-[37%] h-full z-40 duration-500 " +
+            (loginVisible ? "right-0" : "-right-[100%]")
+          }
+        >
+          <div className='w-[75%] h-full mt-4 '>
+            <X
+              onClick={handleLogin}
+              className='w-6 h-6 cursor-pointer text-gray-600'
+            />
+            <div className='w-full h-[90px] mt-6 flex justify-between ml-1'>
+              <div className='flex flex-col justify-between'>
+                <h2 className='text-3xl font-semibold'>Login</h2>
+                <span className='font-semibold -mt-3'>
+                  or&nbsp;
+                  <span className='text-orange-600'>create an account</span>
+                </span>
+                <div className='w-8 h-[1px] bg-black'></div>
               </div>
+              <div className='w-[27%]'>
+                <img
+                  className='object-center'
+                  src='https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto/Image-login_btpq7r'
+                  alt=''
+                />
+              </div>
+            </div>
+
+            <SignInBtn />
+
+            <div className='w-full mt-1 text-[12px] font-semibold text-gray-600'>
+              <span className="">By clicking on Login, I accept the </span>
+              <span className="text-black font-bold">Terms & Conditions</span>&nbsp;
+              <span>&</span>&nbsp;
+              <span className="text-black font-bold">Privacy Policy</span>
             </div>
           </div>
         </div>
-      }
+      </div>
+
 
       <div className='relative w-full'>
         <div className='w-full sticky bg-white z-20 top-0 shadow-[0_3px_20px_rgb(0,0,0,0.1)] h-[80px] flex justify-center items-center'>
@@ -247,9 +247,8 @@ const Navbar = () => {
             <div className='flex items-center font-bold gap-6 md:gap-10 text-[16px] '>
               {navItems.map(({ name, icon: Icon, path }, i) =>
                 name === "Sign In" ? (
-                  <div onClick={handleLogin}>
+                  <div key={i} onClick={handleLogin}>
                     <div
-                      key={i}
                       className='flex gap-2 items-center hover:text-orange-500'
                     >
                       {userData ? (
@@ -270,9 +269,8 @@ const Navbar = () => {
                     </div>
                   </div>
                 ) : (
-                  <Link to={path}>
+                  <Link key={i} to={path}>
                     <div
-                      key={i}
                       className='flex gap-2 items-center group'
                     >
                       <Icon className='w-5 h-5 group-hover:text-orange-500 ' />

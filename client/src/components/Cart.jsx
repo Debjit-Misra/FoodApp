@@ -1,10 +1,10 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCart, deleteItem } from "../utils/cartSlice";
 import toast from "react-hot-toast";
 import { useNavigate, Link } from "react-router-dom";
 import { Star } from "lucide-react";
-import { toggleLogin } from "../utils/toggleSllice";
+import { toggleLogin } from "../utils/toggleSlice";
 
 let veg =
   "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Veg_symbol.svg/1024px-Veg_symbol.svg.png";
@@ -39,18 +39,18 @@ const Cart = () => {
     navigate("/")
   }
 
-  function handleRemoveFromCart(idx) {
-    if (cartData.length > 1) {
-      let newArr = [...cartData];
-      newArr.splice(idx, 1);
-      // setCartData(newArr);
-      dispatch(deleteItem(newArr));
-      // localStorage.setItem("cartData", JSON.stringify(newArr))
-      toast.success("Item removed");
-    } else {
-      handleClearCart();
-    }
-  }
+  // function handleRemoveFromCart(idx) {
+  //   if (cartData.length > 1) {
+  //     let newArr = [...cartData];
+  //     newArr.splice(idx, 1);
+  //     // setCartData(newArr);
+  //     dispatch(deleteItem(newArr));
+  //     // localStorage.setItem("cartData", JSON.stringify(newArr))
+  //     toast.success("Item removed");
+  //   } else {
+  //     handleClearCart();
+  //   }
+  // }
 
 
 
@@ -140,7 +140,7 @@ function CartItemDetails({ data }) {
     price,
     defaultPrice,
     finalPrice,
-    itemAttribute: { vegClassifier },
+    itemAttribute,
     ratings: {
       aggregatedRating: { rating, ratingCountV2 },
     },
@@ -154,6 +154,8 @@ function CartItemDetails({ data }) {
   const [isMore, setIsMore] = useState(false);
 
   const cartData = useSelector((state) => state.cartSlice.cartItems);
+
+  const dispatch = useDispatch();
 
   function handleRemoveFromCart(idx) {
     if (cartData.length > 1) {
@@ -175,7 +177,7 @@ function CartItemDetails({ data }) {
           <div className='w-[75%] sm:w-[95%]'>
             <img
               className='w-4 h-4 mb-1'
-              src={vegClassifier === "VEG" ? veg : nonVeg}
+              src={itemAttribute?.vegClassifier === "VEG" ? veg : nonVeg}
               alt=''
             />
             <p className='font-bold text-lg'>{name}</p>

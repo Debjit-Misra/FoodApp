@@ -19,3 +19,13 @@
 .active span {
   display: block;
 }
+
+.active-search {
+  background-color: rgb(61, 59, 59);
+  border: none;
+  color: white;
+}
+
+.active-search span {
+  display: block;
+}

@@ -4,15 +4,13 @@ import { auth, provider } from '../config/firebaseAuth'
 import { useDispatch, useSelector } from 'react-redux'
 import { addUserData, removeUserData } from '../utils/authSlice'
 import { useNavigate } from 'react-router-dom'
-import { toggleLogin } from '../utils/toggleSllice'
+import { toggleLogin } from '../utils/toggleSlice'
 
 const SignInBtn = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
   const userData = useSelector((state) => state.authSlice.userData);
-
-
 
   async function handleAuth() {
     let data = await signInWithPopup(auth, provider);

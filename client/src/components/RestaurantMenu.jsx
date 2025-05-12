@@ -11,13 +11,12 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { CartContext, Coordinates } from "../context/contextApi";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart, clearCart } from "../utils/cartSlice";
+import { clearCart } from "../utils/cartSlice";
+import { toggleDiffRes } from "../utils/toggleSlice.js";
 import toast from "react-hot-toast";
+import { nonVeg, veg } from "../utils/links";
+import AddToCardBtn from "./AddToCardBtn";
 
-let veg =
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Veg_symbol.svg/1024px-Veg_symbol.svg.png";
-let nonVeg =
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Non_veg_symbol.svg/2048px-Non_veg_symbol.svg.png";
 
 const RestaurantMenu = () => {
   const { id } = useParams();
@@ -341,54 +340,25 @@ function DetailMenuCard({ info, resInfo }) {
   } = info;
   const [isMore, setIsMore] = useState(false);
 
-  // const { cartData, setCartData } = useContext(CartContext)
-  const cartData = useSelector((state) => state.cartSlice.cartItems);
+  const isDiffRes = useSelector((state) => state.toggleSlice.isDiffRes)
 
-  const [isDeffRes, setIsDiffRes] = useState(false);
-
-  const getResInfoFromLocalStore = useSelector(
-    (state) => state.cartSlice.resInfo
-  );
+  // const getResInfoFromLocalStore = useSelector(
+  //   (state) => state.cartSlice.resInfo
+  // );
 
   if (description) {
     let trimDes = description.substring(0, 135) + "...";
-    // console.log(trimDes);
   }
 
   const dispatch = useDispatch();
 
-  function handleAddToCart() {
-    console.log(resInfo);
-    // let getResInfoFromLocalStore = JSON.parse(localStorage.getItem("resInfo")) || []
-    const isAdded = cartData.find((data) => data.id === info.id);
-    if (!isAdded) {
-      if (
-        getResInfoFromLocalStore.name === resInfo.name ||
-        getResInfoFromLocalStore.length === 0
-      ) {
-        dispatch(addToCart({ info, resInfo }));
-        toast.success("Food Added to the Cart");
-      } else {
-        // alert("different restaurant item")
-        setIsDiffRes((prev) => !prev);
-      }
-    } else {
-      toast.error("Already Added", {
-        position: "top-right",
-      });
-    }
-  }
-
   function handleIsDiffRes() {
-    setIsDiffRes((prev) => !prev)
+    dispatch(toggleDiffRes())
   }
 
   function handleClearCart() {
     dispatch(clearCart())
     handleIsDiffRes()
-    // setCartData([])
-    // localStorage.setItem("cartData", JSON.stringify([]))
-    // localStorage.clear()
   }
 
   return (
@@ -444,14 +414,14 @@ function DetailMenuCard({ info, resInfo }) {
             }`}
         >
           <div
-            className={`w-full ${imageId
-              ? "h-[160px] flex flex-col items-center"
+            className={`relative w-full ${imageId
+              ? "flex flex-col items-center"
               : "flex items-center justify-center"
               }`}
           >
             {imageId && (
               <img
-                className='h-full object-cover rounded-xl'
+                className='h-[160px] w-full object-cover rounded-xl'
                 src={
                   "https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_300,h_300,c_fit/" +
                   imageId
@@ -459,20 +429,14 @@ function DetailMenuCard({ info, resInfo }) {
                 alt=''
               />
             )}
-            <button
-              className={`${imageId ? "-mt-6" : ""
-                } w-[80%] font-bold bg-white py-[6px] shadow-xl border border-gray-100 text-lg text-green-600 rounded-xl hover:bg-gray-300 cursor-pointer`}
-              onClick={handleAddToCart}
-            >
-              ADD
-            </button>
+            <AddToCardBtn info={info} resInfo={resInfo} handleIsDiffRes={handleIsDiffRes} />
           </div>
         </div>
       </div>
       <hr className='my-5 text-gray-300 mt-10' />
-      {isDeffRes && (
+      {isDiffRes && (
         <div
-          className='fixed z-50 w-[520px] h-[200px] left-1/2 -translate-x-1/2 bottom-6 bg-white shadow-[0px_0px_10px_rgba(0,0,0,0.2),_0px_0px_15px_rgba(0,0,0,0.2)] p-3 flex justify-center items-center
+          className='fixed z-50 w-[520px] h-[200px] left-1/2 -translate-x-1/2 bottom-6 bg-white shadow-[0px_0px_10px_rgba(0,0,0,0.1)] p-3 flex justify-center items-center
 '
         >
           <div className='w-[90%] flex flex-col'>

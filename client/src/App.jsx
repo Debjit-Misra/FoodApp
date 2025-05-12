@@ -7,6 +7,8 @@ import { useContext, useEffect, useState } from "react"
 import Cart from "./components/Cart"
 import { useSelector } from "react-redux"
 import SignInPage from "./components/SignInBtn"
+import SearchPage from "./components/SearchPage"
+import PageNotFound from "./components/PageNotFound"
 
 function App() {
   // const [visible, setVisible] = useState(false);
@@ -25,22 +27,19 @@ function App() {
 
 
   return (
-    // <CartContext.Provider value={{ cartData, setCartData }}>
     <Coordinates.Provider value={{ coord, setCoord }}>
-      {/* <Visibility.Provider value={{ visible, setVisible }}> */}
       <div className={visible ? "overflow- max-w-screen max-h-screen" : ""}>
         <Routes>
           <Route path="/" element={<Navbar />}>
             <Route path="/" element={<Body />} />
             <Route path="/restaurantMenu/:id" element={<RestaurantMenu />} />
             <Route path="/cart" element={<Cart />} />
-            <Route path="*" element={<h1>Comming Soon...</h1>} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="*" element={<PageNotFound />} />
           </Route>
         </Routes>
       </div >
-      {/* </Visibility.Provider> */}
     </Coordinates.Provider>
-    // </CartContext.Provider>
   )
 }
 
