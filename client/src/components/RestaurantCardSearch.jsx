@@ -65,3 +65,13 @@ const RestaurantCardSearch = ({ data }) => {
 };
 
 export default RestaurantCardSearch;
+
+export function withHoc(WrappedComponent) {
+  return (prop) => {
+    return (
+      <div className="relative">
+        <p className="absolute top-1/4 left-2 z-[100] bg-black text-white px-1 text-sm rounded-sm opacity-70">Ad</p>
+        <WrappedComponent {...prop} />
+      </div>)
+  }
+}

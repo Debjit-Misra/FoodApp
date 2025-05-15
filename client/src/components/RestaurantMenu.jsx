@@ -16,7 +16,7 @@ import { toggleDiffRes } from "../utils/toggleSlice.js";
 import toast from "react-hot-toast";
 import { nonVeg, veg } from "../utils/links";
 import AddToCardBtn from "./AddToCardBtn";
-
+import { MenuShimmer } from "./Shimmer.jsx";
 
 const RestaurantMenu = () => {
   const { id } = useParams();
@@ -40,27 +40,31 @@ const RestaurantMenu = () => {
       `https://www.swiggy.com/dapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=${lat}&lng=${lng}&restaurantId=${mainId}&catalog_qa=undefined&submitAction=ENTER`
     );
     let res = await data.json();
-    // console.log(res);
-    // console.log(
-    //   (res?.data?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards).filter(
-    //     (data) => data?.card?.card?.title === "Top Picks"
-    //   )
-    // );
+    // console.log(res?.data);
+    const resData = res?.data?.cards?.filter(
+      (data) => data?.card?.card?.info?.id
+    )?.[0]?.card?.card?.info;
+    setResInfo(resData);
+    // setResInfo(res?.data?.cards[2]?.card?.card?.info);
+    const discountInfo = res?.data?.cards?.find(
+      (data) => data?.card?.card?.id === "offerCollectionWidget"
+    )?.card?.card?.gridElements?.infoWithStyle?.offers;
 
-    setResInfo(res?.data?.cards[2]?.card?.card?.info);
-    setDiscountData(
-      res?.data?.cards[3]?.card?.card?.gridElements?.infoWithStyle?.offers
-    );
+    setDiscountData(discountInfo);
+    // setDiscountData(
+    //   res?.data?.cards[3]?.card?.card?.gridElements?.infoWithStyle?.offers
+    // );
+    let actualMenu = res?.data?.cards.find((data) => data?.groupedCard);
     setTopPicksData(
-      (res?.data?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards).filter(
+      actualMenu?.groupedCard?.cardGroupMap?.REGULAR?.cards?.filter(
         (data) => data?.card?.card?.title === "Top Picks"
       )
     );
-    let actualMenu =
-      (res?.data?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards).filter(
-        (data) => data?.card?.card?.itemCards || data?.card?.card?.categories
-      );
-    setMenuData(actualMenu);
+
+    console.log(actualMenu);
+    setMenuData(actualMenu?.groupedCard?.cardGroupMap?.REGULAR?.cards)?.filter(
+      (data) => data?.card?.card?.itemCards || data?.card?.card?.categories
+    );
     // console.log(topPicksData);
   }
 
@@ -85,195 +89,199 @@ const RestaurantMenu = () => {
 
   return (
     <div className='w-full'>
-      <div className='w-[95%] md:w-[750px] mx-auto mt-8'>
-        <p className='text-[12px] text-slate-500 font-semibold'>
-          <Link to={"/"}>
-            <span className='hover:text-slate-700 mr-2 cursor-pointer'>
-              Home
-            </span>
-          </Link>
-          /
-          <Link to={"/"}>
-            <span className='hover:text-slate-700 mx-2 cursor-pointer'>
-              {resInfo.city}
-            </span>
-          </Link>
-          /<span className='text-slate-700 mx-2'>{resInfo.name}</span>
-        </p>
+      {
+        menuData.length ?
 
-        <h1 className='font-bold ml-2 text-2xl mt-7'>{resInfo.name}</h1>
-
-        <div className='w-full h-[190px] bg-gradient-to-t from-gray-200/70 to-transparent mt-3 rounded-[30px] p-4'>
-          <div className='flex flex-col justify-center gap-[3px] w-full h-full border border-slate-200/70 rounded-[30px] bg-white p-4 pt-0'>
-            <div className='flex items-center gap-1 font-bold mt-1'>
-              <Star fill='green' stroke='green' size={16} strokeWidth={1} />
-              <span>{resInfo.avgRating}</span>
-              <span>({resInfo.totalRatingsString})</span>
-              <div className='flex items-center mx-1'>
-                <div className='w-1 h-1 bg-gray-400 rounded-[100%] mt-[1px]'></div>
-              </div>
-              <span className=''>{resInfo.costForTwoMessage}</span>
-            </div>
-
-            <p className='underline font-bold text-orange-600 text-[14px]'>
-              {resInfo?.cuisines?.join(", ")}
+          <div className='w-[95%] md:w-[750px] mx-auto mt-8'>
+            <p className='text-[12px] text-slate-500 font-semibold'>
+              <Link to={"/"}>
+                <span className='hover:text-slate-700 mr-2 cursor-pointer'>
+                  Home
+                </span>
+              </Link>
+              /
+              <Link to={"/"}>
+                <span className='hover:text-slate-700 mx-2 cursor-pointer'>
+                  {resInfo?.city}
+                </span>
+              </Link>
+              /<span className='text-slate-700 mx-2'>{resInfo?.name}</span>
             </p>
 
-            <div className='mt-2 flex gap-3'>
-              <div className='w-[9px] flex flex-col justify-center items-center'>
-                <div className='w-[7px] h-[7px] bg-gray-300 rounded-full'></div>
-                <div className='w-[1px] h-[25px] bg-gray-300'></div>
-                <div className='w-[7px] h-[7px] bg-gray-300 rounded-full'></div>
-              </div>
+            <h1 className='font-bold ml-2 text-2xl mt-7'>{resInfo?.name}</h1>
 
-              <div className='flex gap-2 flex-col font-bold'>
-                <p>
-                  Outlet{" "}
-                  <span className='font-normal text-gray-400'>
-                    {resInfo?.areaName}
-                  </span>
+            <div className='w-full h-[190px] bg-gradient-to-t from-gray-200/70 to-transparent mt-3 rounded-[30px] p-4'>
+              <div className='flex flex-col justify-center gap-[3px] w-full h-full border border-slate-200/70 rounded-[30px] bg-white p-4 pt-0'>
+                <div className='flex items-center gap-1 font-bold mt-1'>
+                  <Star fill='green' stroke='green' size={16} strokeWidth={1} />
+                  <span>{resInfo?.avgRating}</span>
+                  <span>({resInfo?.totalRatingsString})</span>
+                  <div className='flex items-center mx-1'>
+                    <div className='w-1 h-1 bg-gray-400 rounded-[100%] mt-[1px]'></div>
+                  </div>
+                  <span className=''>{resInfo?.costForTwoMessage}</span>
+                </div>
+
+                <p className='underline font-bold text-orange-600 text-[14px]'>
+                  {resInfo?.cuisines?.join(", ")}
                 </p>
-                <p>{resInfo?.sla?.slaString}</p>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <div className='w-full overflow-hidden'>
-          <div className='flex justify-between mt-8'>
-            <h1 className='font-bold text-xl'>Deals for you</h1>
-            <div className='flex items-center gap-1'>
-              <div
-                onClick={handlePrev}
-                className={
-                  ` rounded-full p-2 cursor-pointer ` +
-                  (value <= 0 ? "bg-gray-100" : "bg-gray-300")
-                }
-              >
-                <MoveLeft
-                  className={
-                    `w-4 h-4 ` +
-                    (value <= 0 ? "text-gray-300" : "text-gray-800")
-                  }
-                />
-              </div>
-              <div
-                onClick={handleNext}
-                className={
-                  ` rounded-full p-2 cursor-pointer ` +
-                  (value >= 108 ? "bg-gray-100" : "bg-gray-300")
-                }
-              >
-                <MoveRight
-                  className={
-                    `w-4 h-4 ` +
-                    (value >= 108 ? "text-gray-300" : "text-gray-800")
-                  }
-                />
-              </div>
-            </div>
-          </div>
-          <div
-            className='flex gap-4 mt-4 duration-300'
-            style={{ translate: `-${value}%` }}
-          >
-            {discountData.map((data, i) => (
-              <Discount data={data} key={i} />
-            ))}
-          </div>
-        </div>
+                <div className='mt-2 flex gap-3'>
+                  <div className='w-[9px] flex flex-col justify-center items-center'>
+                    <div className='w-[7px] h-[7px] bg-gray-300 rounded-full'></div>
+                    <div className='w-[1px] h-[25px] bg-gray-300'></div>
+                    <div className='w-[7px] h-[7px] bg-gray-300 rounded-full'></div>
+                  </div>
 
-        <div className='text-center mt-7 tracking-[0.3rem]'>MENU</div>
-
-        <div className='relative w-full cursor-pointer'>
-          <div className='w-full px-6 py-3 font-semibold text-[16px] bg-gray-300/40 mt-7 rounded-2xl text-gray-500 text-center'>
-            Search for dishes
-          </div>
-          <SearchIcon className='absolute w-5 h-5 right-7 top-3 text-gray-500' />
-        </div>
-
-        {topPicksData && topPicksData.length > 0 ? (
-          <div className='w-full overflow-hidden'>
-            <div className='flex justify-between mt-8'>
-              <h1 className='font-bold text-xl'>
-                {topPicksData[0]?.card?.card?.title}
-              </h1>
-              <div className='flex items-center gap-1'>
-                <div
-                  onClick={pickHandlePrev}
-                  className={
-                    ` rounded-full p-2 cursor-pointer ` +
-                    (pickValue <= 0 ? "bg-gray-100" : "bg-gray-300")
-                  }
-                >
-                  <MoveLeft
-                    className={
-                      `w-4 h-4 ` +
-                      ((pickValue <= 0 ? "bg-gray-100" : "bg-gray-300") <= 0
-                        ? "text-gray-300"
-                        : "text-gray-800")
-                    }
-                  />
-                </div>
-                <div
-                  onClick={pickHandleNext}
-                  className={
-                    ` rounded-full p-2 cursor-pointer ` +
-                    (pickValue >= 108 ? "bg-gray-100" : "bg-gray-300")
-                  }
-                >
-                  <MoveRight
-                    className={
-                      `w-4 h-4 ` +
-                      (pickValue >= 108 ? "text-gray-300" : "text-gray-800")
-                    }
-                  />
+                  <div className='flex gap-2 flex-col font-bold'>
+                    <p>
+                      Outlet{" "}
+                      <span className='font-normal text-gray-400'>
+                        {resInfo?.areaName}
+                      </span>
+                    </p>
+                    <p>{resInfo?.sla?.slaString}</p>
+                  </div>
                 </div>
               </div>
             </div>
-            <div
-              className='flex gap-4 mt-5 duration-300'
-              style={{ translate: `-${pickValue}%` }}
-            >
-              {topPicksData[0]?.card?.card?.carousel.map(
-                (
-                  {
-                    creativeId,
-                    dish: {
-                      info: { price, defaultPrice },
-                    },
-                  },
-                  i
-                ) => (
-                  <div className='relative min-w-[320px] h-[340px]'>
-                    <img
-                      className='w-full h-full object-cover rounded-2xl'
-                      src={
-                        "https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_292,h_300/" +
-                        creativeId
+
+            <div className='w-full overflow-hidden'>
+              <div className='flex justify-between mt-8'>
+                <h1 className='font-bold text-xl'>Deals for you</h1>
+                <div className='flex items-center gap-1'>
+                  <div
+                    onClick={handlePrev}
+                    className={
+                      ` rounded-full p-2 cursor-pointer ` +
+                      (value <= 0 ? "bg-gray-100" : "bg-gray-300")
+                    }
+                  >
+                    <MoveLeft
+                      className={
+                        `w-4 h-4 ` +
+                        (value <= 0 ? "text-gray-300" : "text-gray-800")
                       }
-                      alt='top-picks-image'
                     />
-                    <div className='absolute bottom-4 w-full flex justify-between items-center text-white px-4'>
-                      <p className='font-bold'>
-                        ₹{defaultPrice / 100 || price / 100}
-                      </p>
-                      <button className='px-10 py-2 font-bold text-green-600 bg-white rounded-xl hover:bg-gray-300 cursor-pointer'>
-                        ADD
-                      </button>
+                  </div>
+                  <div
+                    onClick={handleNext}
+                    className={
+                      ` rounded-full p-2 cursor-pointer ` +
+                      (value >= 108 ? "bg-gray-100" : "bg-gray-300")
+                    }
+                  >
+                    <MoveRight
+                      className={
+                        `w-4 h-4 ` +
+                        (value >= 108 ? "text-gray-300" : "text-gray-800")
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                className='flex gap-4 mt-4 duration-300'
+                style={{ translate: `-${value}%` }}
+              >
+                {discountData?.map((data, i) => (
+                  <Discount data={data} key={i} />
+                ))}
+              </div>
+            </div>
+
+            <div className='text-center mt-7 tracking-[0.3rem]'>MENU</div>
+
+            <div className='relative w-full cursor-pointer'>
+              <div className='w-full px-6 py-3 font-semibold text-[16px] bg-gray-300/40 mt-7 rounded-2xl text-gray-500 text-center'>
+                Search for dishes
+              </div>
+              <SearchIcon className='absolute w-5 h-5 right-7 top-3 text-gray-500' />
+            </div>
+
+            {topPicksData && topPicksData.length > 0 ? (
+              <div className='w-full overflow-hidden'>
+                <div className='flex justify-between mt-8'>
+                  <h1 className='font-bold text-xl'>
+                    {topPicksData[0]?.card?.card?.title}
+                  </h1>
+                  <div className='flex items-center gap-1'>
+                    <div
+                      onClick={pickHandlePrev}
+                      className={
+                        ` rounded-full p-2 cursor-pointer ` +
+                        (pickValue <= 0 ? "bg-gray-100" : "bg-gray-300")
+                      }
+                    >
+                      <MoveLeft
+                        className={
+                          `w-4 h-4 ` +
+                          ((pickValue <= 0 ? "bg-gray-100" : "bg-gray-300") <= 0
+                            ? "text-gray-300"
+                            : "text-gray-800")
+                        }
+                      />
+                    </div>
+                    <div
+                      onClick={pickHandleNext}
+                      className={
+                        ` rounded-full p-2 cursor-pointer ` +
+                        (pickValue >= 108 ? "bg-gray-100" : "bg-gray-300")
+                      }
+                    >
+                      <MoveRight
+                        className={
+                          `w-4 h-4 ` +
+                          (pickValue >= 108 ? "text-gray-300" : "text-gray-800")
+                        }
+                      />
                     </div>
                   </div>
-                )
-              )}
+                </div>
+                <div
+                  className='flex gap-4 mt-5 duration-300'
+                  style={{ translate: `-${pickValue}%` }}
+                >
+                  {topPicksData[0]?.card?.card?.carousel.map(
+                    (
+                      {
+                        creativeId,
+                        dish: {
+                          info: { price, defaultPrice },
+                        },
+                      },
+                      i
+                    ) => (
+                      <div className='relative min-w-[320px] h-[340px]'>
+                        <img
+                          className='w-full h-full object-cover rounded-2xl'
+                          src={
+                            "https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_292,h_300/" +
+                            creativeId
+                          }
+                          alt='top-picks-image'
+                        />
+                        <div className='absolute bottom-4 w-full flex justify-between items-center text-white px-4'>
+                          <p className='font-bold'>
+                            ₹{defaultPrice / 100 || price / 100}
+                          </p>
+                          <button className='px-10 py-2 font-bold text-green-600 bg-white rounded-xl hover:bg-gray-300 cursor-pointer'>
+                            ADD
+                          </button>
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
+              </div>
+            ) : null}
+            <div>
+              {menuData?.map(({ card: { card } }) => (
+                <MenuCard card={card} resInfo={resInfo} />
+              ))}
             </div>
-          </div>
-        ) : null}
-        <div>
-          {menuData.map(({ card: { card } }) => (
-            <MenuCard card={card} resInfo={resInfo} />
-          ))}
-        </div>
-      </div>
+          </div> : <MenuShimmer />
+      }
     </div>
   );
 };
@@ -316,8 +324,8 @@ function MenuCard({ card, resInfo }) {
     // console.log(categories);
     return (
       <div>
-        <h1 className='font-bold text-xl'>{categories.title}</h1>
-        {categories.map((data) => {
+        <h1 className='font-bold text-xl'>{categories?.title}</h1>
+        {categories?.map((data) => {
           <MenuCard card={data} resInfo={resInfo} />;
         })}
       </div>
@@ -340,7 +348,7 @@ function DetailMenuCard({ info, resInfo }) {
   } = info;
   const [isMore, setIsMore] = useState(false);
 
-  const isDiffRes = useSelector((state) => state.toggleSlice.isDiffRes)
+  const isDiffRes = useSelector((state) => state.toggleSlice.isDiffRes);
 
   // const getResInfoFromLocalStore = useSelector(
   //   (state) => state.cartSlice.resInfo
@@ -353,12 +361,12 @@ function DetailMenuCard({ info, resInfo }) {
   const dispatch = useDispatch();
 
   function handleIsDiffRes() {
-    dispatch(toggleDiffRes())
+    dispatch(toggleDiffRes());
   }
 
   function handleClearCart() {
-    dispatch(clearCart())
-    handleIsDiffRes()
+    dispatch(clearCart());
+    handleIsDiffRes();
   }
 
   return (
@@ -429,7 +437,11 @@ function DetailMenuCard({ info, resInfo }) {
                 alt=''
               />
             )}
-            <AddToCardBtn info={info} resInfo={resInfo} handleIsDiffRes={handleIsDiffRes} />
+            <AddToCardBtn
+              info={info}
+              resInfo={resInfo}
+              handleIsDiffRes={handleIsDiffRes}
+            />
           </div>
         </div>
       </div>
@@ -446,8 +458,16 @@ function DetailMenuCard({ info, resInfo }) {
               reset your cart for adding items from this restaurant?
             </p>
             <div className='flex gap-5 justify-between w-full mt-4'>
-              <button className='w-full border-2 border-green-600 py-2 text-green-700 font-bold text-lg uppercase hover:shadow-[0px_0px_8px_rgba(0,0,0,0.2)] cursor-pointer' onClick={handleIsDiffRes}>No</button>
-              <button className='w-full bg-green-600 py-2 text-white font-bold text-lg uppercase hover:shadow-[0px_0px_8px_rgba(0,0,0,0.2)] cursor-pointer' onClick={handleClearCart}>
+              <button
+                className='w-full border-2 border-green-600 py-2 text-green-700 font-bold text-lg uppercase hover:shadow-[0px_0px_8px_rgba(0,0,0,0.2)] cursor-pointer'
+                onClick={handleIsDiffRes}
+              >
+                No
+              </button>
+              <button
+                className='w-full bg-green-600 py-2 text-white font-bold text-lg uppercase hover:shadow-[0px_0px_8px_rgba(0,0,0,0.2)] cursor-pointer'
+                onClick={handleClearCart}
+              >
                 Yes, start afresh
               </button>
             </div>

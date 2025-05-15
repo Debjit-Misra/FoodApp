@@ -3,7 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const RestaurantCard = (info) => {
-  console.log(info);
+  // console.log(info);
   return (
     <Link to={`/restaurantMenu/${info.link.split("/").at(-1)}`}>
       <div className='relative min-w-[273px] h-[183px]  rounded-2xl overflow-hidden'>

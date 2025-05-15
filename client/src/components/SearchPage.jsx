@@ -1,7 +1,7 @@
 import { ChevronLeft, SearchIcon, X } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
 import DishesCardSearch from "./DishesCardSearch";
-import RestaurantCardSearch from "./RestaurantCardSearch";
+import RestaurantCardSearch, { withHoc } from "./RestaurantCardSearch";
 import { Coordinates } from "../context/contextApi";
 import { useDispatch, useSelector } from "react-redux";
 import { resetSimilarResDish, toggleDiffRes } from "../utils/toggleSlice";
@@ -13,13 +13,13 @@ const SearchPage = () => {
   const [restaurantData, setRestaurantData] = useState([]);
   const [selectedResDish, setSelectedResDish] = useState(null);
   const [similarResDishes, setSimilarResDishes] = useState([]);
-
   console.log(selectedResDish);
-
 
   const {
     coord: { lat, lng },
   } = useContext(Coordinates);
+
+  const PromotedRes = withHoc(RestaurantCardSearch)
 
   const filterOptions = ["Restaurant", "Dishes"];
 
@@ -131,7 +131,7 @@ const SearchPage = () => {
           <SearchIcon className='absolute h-5 w-5 right-4 top-1/2 -translate-y-1/2 opacity-70' />
         </div>
 
-        {selectedResDish && (
+        {!selectedResDish && (
           <div className='flex flex-wrap gap-3 my-6'>
             {filterOptions.map((filterName) => (
               <button
@@ -147,7 +147,7 @@ const SearchPage = () => {
           </div>
         )}
 
-        {true && (
+        {searchQuery && (
           <div className='w-full grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#f4f5f7] px-4 py-6'>
             {selectedResDish ?
               <>
@@ -169,7 +169,8 @@ const SearchPage = () => {
                   />
                 ))
                 : restaurantData.map((data) => (
-                  <RestaurantCardSearch data={data} />
+                  data?.card?.card?.info?.promoted ? <PromotedRes data={data} /> :
+                    <RestaurantCardSearch data={data} />
                 ))}
           </div>
         )}
