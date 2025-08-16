@@ -220,10 +220,10 @@ const Navbar = () => {
           <div className='w-full px-3 md:w-[80%] flex justify-between'>
             <div className='flex items-center'>
               <Link to={"/"}>
-                <div className='w-20 -ml-4 sm:ml-0'>
+                <div className='w-16 -ml-4 sm:ml-0'>
                   <img
                     className="w-full"
-                    src='https://1000logos.net/wp-content/uploads/2021/05/Swiggy-emblem.png'
+                    src='https://img.freepik.com/premium-vector/logo-food-company-that-says-sun-sun-sunflower_917213-253424.jpg'
                     alt='logo'
                   />
                 </div>
@@ -273,11 +273,14 @@ const Navbar = () => {
                     <div
                       className='flex gap-2 items-center group'
                     >
-                      <Icon className='w-5 h-5 group-hover:text-orange-500 ' />
+                      <div className="relative">
+                        <Icon className='w-5 h-5 group-hover:text-orange-500' />
+                        {name === "Cart" && cartData.length > 0 && (
+                          <p className="absolute w-4 h-4 flex items-center justify-center left-1/2 -top-1/4 -translate-1/2 bg-orange-600 text-white text-sm font-bold p-2 rounded-full">{cartData.length}</p>
+                        )}
+                      </div>
                       <p className="hidden md:block text-[#02060C] group-hover:text-orange-500">{name}</p>
-                      {name === "Cart" && cartData.length > 0 && (
-                        <p>{cartData.length}</p>
-                      )}
+
                     </div>
                   </Link>
                 )

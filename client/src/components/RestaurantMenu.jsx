@@ -8,8 +8,8 @@ import {
   Star,
 } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { CartContext, Coordinates } from "../context/contextApi";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { Coordinates } from "../context/contextApi";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCart } from "../utils/cartSlice";
 import { toggleDiffRes } from "../utils/toggleSlice.js";
@@ -29,6 +29,7 @@ const RestaurantMenu = () => {
   const {
     coord: { lat, lng },
   } = useContext(Coordinates);
+  const navigate = useNavigate()
 
   const [menuData, setMenuData] = useState([]);
   const [resInfo, setResInfo] = useState([]);
@@ -61,12 +62,13 @@ const RestaurantMenu = () => {
       )
     );
 
-    console.log(actualMenu);
+    // console.log(actualMenu);
     setMenuData(actualMenu?.groupedCard?.cardGroupMap?.REGULAR?.cards)?.filter(
       (data) => data?.card?.card?.itemCards || data?.card?.card?.categories
     );
     // console.log(topPicksData);
   }
+
 
   function handleNext() {
     setValue((prev) => prev + 50);
@@ -81,7 +83,11 @@ const RestaurantMenu = () => {
     setPickValue((prev) => prev - 50);
   }
 
-  // console.log(menuData);
+  function moveToSearch() {
+    navigate("/search")
+  }
+
+  console.log(menuData);
 
   useEffect(() => {
     fetchMenu();
@@ -190,10 +196,15 @@ const RestaurantMenu = () => {
               </div>
             </div>
 
-            <div className='text-center mt-7 tracking-[0.3rem]'>MENU</div>
+            <div className='text-center mt-7 tracking-[0.3rem] text-sm'>
+              MENU
+            </div>
 
             <div className='relative w-full cursor-pointer'>
-              <div className='w-full px-6 py-3 font-semibold text-[16px] bg-gray-300/40 mt-7 rounded-2xl text-gray-500 text-center'>
+              <div
+                className='w-full px-6 py-3 font-semibold text-[16px] bg-gray-300/40 mt-7 rounded-2xl text-gray-500 text-center'
+                onClick={moveToSearch}
+              >
                 Search for dishes
               </div>
               <SearchIcon className='absolute w-5 h-5 right-7 top-3 text-gray-500' />

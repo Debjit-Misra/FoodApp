@@ -6,6 +6,7 @@ import { Coordinates } from "../context/contextApi";
 import { useDispatch, useSelector } from "react-redux";
 import { resetSimilarResDish, toggleDiffRes } from "../utils/toggleSlice";
 import { clearCart } from "../utils/cartSlice";
+import SearchPageCardShimmer from "./searchPageCardShimmer";
 
 const SearchPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -115,7 +116,7 @@ const SearchPage = () => {
   return (
     <div className='w-full'>
       <div className='w-[90%] xl:w-[60%] mx-auto'>
-        <div className='relative mt-12'>
+        <div className='relative mt-12 mb-6'>
           <input
             className='w-full font-bold text-black border border-gray-300 rounded-xl  px-10 py-3 placeholder-gray-500  focus:outline-none'
             type='text'
@@ -132,7 +133,7 @@ const SearchPage = () => {
         </div>
 
         {!selectedResDish && (
-          <div className='flex flex-wrap gap-3 my-6'>
+          <div className='flex flex-wrap gap-3 mb-6'>
             {filterOptions.map((filterName) => (
               <button
                 onClick={() => handleFilterBtn(filterName)}
@@ -147,33 +148,34 @@ const SearchPage = () => {
           </div>
         )}
 
-        {searchQuery && (
-          <div className='w-full grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#f4f5f7] px-4 py-6'>
-            {selectedResDish ?
-              <>
-                <div>
-                  <p className="mb-4 font-bold text-lg">Items added to cart</p>
-                  <DishesCardSearch data={selectedResDish.card.card} />
-                  <p className="mt-6 mb-4 font-bold text-lg">More dishes from this restaurant</p>
-                </div>
-                <br />
-                {
-                  similarResDishes.map((data) => <DishesCardSearch data={{ ...data.card, restaurant: selectedResDish.card.card.restaurant }} />)
-                }
-              </>
-              : activeBtn === "Dishes"
-                ? dishes.map((data) => (
-                  <DishesCardSearch
-                    data={data.card.card}
-                    handleIsDiffRes={handleIsDiffRes}
-                  />
-                ))
-                : restaurantData.map((data) => (
-                  data?.card?.card?.info?.promoted ? <PromotedRes data={data} /> :
-                    <RestaurantCardSearch data={data} />
-                ))}
-          </div>
-        )}
+        {
+          searchQuery && (
+            <div className='w-full grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#f4f5f7] px-4 py-6'>
+              {selectedResDish ?
+                <>
+                  <div>
+                    <p className="mb-4 font-bold text-lg">Items added to cart</p>
+                    <DishesCardSearch data={selectedResDish.card.card} />
+                    <p className="mt-6 mb-4 font-bold text-lg">More dishes from this restaurant</p>
+                  </div>
+                  <br />
+                  {
+                    similarResDishes.map((data) => <DishesCardSearch data={{ ...data.card, restaurant: selectedResDish.card.card.restaurant }} />)
+                  }
+                </>
+                : dishes.length ? activeBtn === "Dishes"
+                  ? dishes.map((data) => (
+                    <DishesCardSearch
+                      data={data.card.card}
+                      handleIsDiffRes={handleIsDiffRes}
+                    />
+                  ))
+                  : restaurantData.map((data) => (
+                    data?.card?.card?.info?.promoted ? <PromotedRes data={data} /> :
+                      <RestaurantCardSearch data={data} />
+                  )) : <SearchPageCardShimmer />}
+            </div>
+          )}
         {isDiffRes && (
           <div
             className='fixed z-50 w-[520px] h-[200px] left-1/2 -translate-x-1/2 bottom-6 bg-white shadow-[0px_0px_10px_rgba(0,0,0,0.2),_0px_0px_15px_rgba(0,0,0,0.2)] p-3 flex justify-center items-center

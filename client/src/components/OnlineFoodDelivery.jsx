@@ -17,7 +17,7 @@ const OnlineFoodDelivery = ({ data = [], title }) => {
   dispatch(setFilterValue(activeBtn))
 
   return (
-    <div className='mt-7'>
+    <div className='my-7'>
       <h2 className='font-bold text-2xl'>{title}</h2>
 
       <div className='flex flex-wrap gap-3 mt-4 ml-3'>

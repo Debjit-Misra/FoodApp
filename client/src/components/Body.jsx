@@ -40,15 +40,15 @@ const Body = () => {
   if (data.communication) {
     return (
       <div className='w-full h-[500px] flex justify-center items-center'>
-        <div className='flex flex-col gap-4 w-[30%] justify-center items-center'>
-          <div className='w-58 h-58 '>
+        <div className='flex flex-col gap-5 w-[30%] justify-center items-center'>
+          <div className='w-58 h-58'>
             <img
               className='h-full w-full object-cover'
               src={`https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_476,h_476/portal/m/location_unserviceable.png`}
               alt=''
             />
           </div>
-          <h1 className='font-bold text-xl'>
+          <h1 className='font-bold text-3xl'>
             {data?.cards[0]?.card?.card?.title}
           </h1>
           <p className='font-semibold text-lg max-w-[80%] text-center'>
